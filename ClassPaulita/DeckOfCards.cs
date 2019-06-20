@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ClassPaulita
@@ -8,13 +9,19 @@ namespace ClassPaulita
     {
         private List<Card> _unusedCards;
         private List<Card> _discardedCards;
-        private Random _random;
+        private Random random = new Random();
 
-        public DeckOfCards() // Declare new lists.
+        //Constructor:
+        public DeckOfCards()
         {
-            for (int i = 0; i > 4; i++)
+            List<Card> unusedCards = new List<Card>();
+            List<Card> discardedCards = new List<Card>();
+            _unusedCards = unusedCards;
+            _discardedCards = discardedCards;
+
+            for (int i = 0; i < 4; i++)
             {
-                for (int j = 0; j > 14; j++)
+                for (int j = 0; j < 13; j++)
                 {
                     Card currentCard = new Card((Card.PossibleCardValues)j, (Card.PossibleCardSuits)i);
                     _unusedCards.Add(currentCard);
@@ -23,21 +30,20 @@ namespace ClassPaulita
         }
 
         // Put all the elements in the discardedCards list that way we can sort all the cards in random order into the unusedCards list one by one.
-        public List<Card> Suffle()
+        public void Suffle()
         {
             _discardedCards.AddRange(_unusedCards);
             _unusedCards.Clear();
 
-            while(_discardedCards.Count > 0)
+            while (_discardedCards.Count > 0)
             {
-                int randomIndex = _random.Next(0, _discardedCards.Count - 1);
+                int randomIndex = random.Next(0, _discardedCards.Count - 1);
                 _unusedCards.Add(_discardedCards[randomIndex]);
                 _discardedCards.Remove(_discardedCards[randomIndex]);
             }
 
-            return _unusedCards;
         }
-        
+
         public Card Deal()
         {
             Card topCard = _unusedCards[0];
@@ -51,9 +57,19 @@ namespace ClassPaulita
         {
             _unusedCards.AddRange(_discardedCards);
 
-            _unusedCards.Sort();
+            _unusedCards.Sort((x, y) => x.CardValue.CompareTo(y.CardValue));
 
             return _unusedCards;
         }
+
+        ////public List<Card> Order()
+        //{
+        //    _discardedCards.AddRange(_unusedCards);
+        //    _unusedCards.Clear();
+
+        //    _unusedCards = _discardedCards.OrderBy(o => o.CardValue).ToList();
+
+        //    return _unusedCards;                        
+        //}        
     }
 }

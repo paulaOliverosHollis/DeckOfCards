@@ -9,15 +9,16 @@ namespace ClassPaulita
         {
             DeckOfCards deckOne = new DeckOfCards();
 
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    Console.WriteLine(diceOne.Roll());
-            //}
-            List<int> x
 
-            for(int i = 0; i < 52; i++)
+            //for (int i = 0; i < 52; i++)
+            //{
+            //    deckOne.Suffle();
+            //    Console.WriteLine(deckOne.Deal());
+            //}
+
+            foreach (Card card in deckOne.Order())
             {
-                Console.WriteLine(deckOne.Deal());
+                Console.WriteLine(card);
             }
         } 
     }

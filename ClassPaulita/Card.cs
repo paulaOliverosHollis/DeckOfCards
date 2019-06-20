@@ -6,8 +6,8 @@ namespace ClassPaulita
 {
     class Card
     {
-        public enum PossibleCardValues { A, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, J, Q, K };       
-        public enum PossibleCardSuits { Clubs, Diamond, Hearts, Spades}
+        public enum PossibleCardValues { A, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, J, Q, K };
+        public enum PossibleCardSuits { Clubs, Diamond, Hearts, Spades }
 
         private PossibleCardValues _cardValue;
         private PossibleCardSuits _cardSuit;
@@ -38,10 +38,15 @@ namespace ClassPaulita
             }
         }
 
-        public Card( PossibleCardValues cardValue, PossibleCardSuits cardSuit)
+        public Card(PossibleCardValues cardValue, PossibleCardSuits cardSuit)
         {
             CardValue = cardValue;
             CardSuit = cardSuit;
         }
+
+        public override string ToString()
+        {
+            return CardValue.ToString() + " of " + CardSuit.ToString();
+        }        
     }
 }
