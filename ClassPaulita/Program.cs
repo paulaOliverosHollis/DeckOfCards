@@ -7,19 +7,8 @@ namespace ClassPaulita
     {
         static void Main()
         {
-            DeckOfCards deckOne = new DeckOfCards();
-
-
-            //for (int i = 0; i < 52; i++)
-            //{
-            //    deckOne.Suffle();
-            //    Console.WriteLine(deckOne.Deal());
-            //}
-
-            foreach (Card card in deckOne.Order())
-            {
-                Console.WriteLine(card);
-            }
+            GuessTheCardGame gameOne = new GuessTheCardGame();
+            gameOne.Run();
         } 
     }
 }

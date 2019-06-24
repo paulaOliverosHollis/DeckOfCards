@@ -13,11 +13,9 @@ namespace ClassPaulita
 
         //Constructor:
         public DeckOfCards()
-        {
-            List<Card> unusedCards = new List<Card>();
-            List<Card> discardedCards = new List<Card>();
-            _unusedCards = unusedCards;
-            _discardedCards = discardedCards;
+        {            
+            _unusedCards = new List<Card>();
+            _discardedCards = new List<Card>();
 
             for (int i = 0; i < 4; i++)
             {
