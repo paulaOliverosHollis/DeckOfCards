@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ClassPaulita
 {
-    class Card
+   public  class Card
     {
         public enum PossibleCardValues { A, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, J, Q, K };
         public enum PossibleCardSuits { Clubs, Diamond, Hearts, Spades }
