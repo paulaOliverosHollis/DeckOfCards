@@ -91,7 +91,7 @@ public class GuessTheCardGame
 
     private void Play()
     {
-        Console.WriteLine("PLAYING");
+        
     }
 
     private void Instructions()
