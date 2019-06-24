@@ -2,37 +2,38 @@
 
 public class GuessTheCardGame
 {  
+    private bool UserChoseToPlay(char userChoice)
+    {
+        return userChoice == 'p' || userChoice == 'P';
+    }
+
+    private bool UserchoseToSeeInstructions(char userChoice)
+    {
+        return userChoice == 'i' || userChoice == 'I';
+    }
+
+    private bool UserChosetoSeeBoard(char userChoice)
+    {
+        return userChoice == 'b' || userChoice == 'B';
+    }
+
+    private bool UserChoseToQuit(char userChoice)
+    {
+        return userChoice == 'q' || userChoice == 'Q';
+    }
+
     private bool IsValidInput(string input)
     {
         if (input == null || input.Length < 1)
             return false;
 
-        char choice = input[0];
+        char userChoice = input[0];
 
-        // if user chose to play.
-        if (choice == 'p' || choice == 'P')
+        if (UserChoseToPlay(userChoice) || UserchoseToSeeInstructions(userChoice) || UserChosetoSeeBoard(userChoice) || UserChoseToQuit(userChoice))
         {
             return true;
         }
-
-        // if user chose to read the instructions.
-        if (choice == 'i' || choice == 'I')
-        {
-            return true;
-        }
-
-        // if user chose to see the score board.
-        if (choice == 'b' || choice == 'B')
-        {
-            return true;
-        }
-
-        // if user chose to quit.
-        if (choice == 'q' || choice == 'Q')
-        {
-            return true;
-        }
-
+       
         return false;
     }
 
@@ -67,22 +68,22 @@ public class GuessTheCardGame
         {
             string userChoice = PrintMenu();
 
-            if (userChoice[0] == 'p' || userChoice[0] == 'P')
+            if (UserChoseToPlay(userChoice[0]))
             {
                 Play();
             }
 
-            if (userChoice[0] == 'i' || userChoice[0] == 'I')
+            if (UserchoseToSeeInstructions(userChoice[0]))
             {
                 Instructions();
             }
 
-            if (userChoice[0] == 'b' || userChoice[0] == 'B')
+            if (UserChosetoSeeBoard(userChoice[0]))
             {
                 HighScoreBoard();
             }
 
-            if (userChoice[0] == 'q' || userChoice[0] == 'Q')
+            if (UserChoseToQuit(userChoice[0]))
             {
                 return;
             }
