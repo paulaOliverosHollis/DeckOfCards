@@ -4,6 +4,7 @@ namespace ClassPaulita
 {
     public class GuessTheCardGame
     {
+        private string spacing = "\n\t\t\t\t\t\t";
 
         private bool UserChoseToPlay(char userChoice)
         {
@@ -25,7 +26,7 @@ namespace ClassPaulita
             return userChoice == 'q' || userChoice == 'Q';
         }
 
-        private bool IsValidInput(string input)
+        private bool IsUserChoiceValid(string input)
         {
             if (input == null || input.Length < 1)
                 return false;
@@ -42,7 +43,6 @@ namespace ClassPaulita
 
         private string PrintMenu()
         {
-            string spacing = "\n\t\t\t\t\t\t";
 
             string menu = $"{spacing}Press P To Play" +
                           $"{spacing}Press I For Instructions" +
@@ -53,7 +53,7 @@ namespace ClassPaulita
 
             string userChoice = Console.ReadLine();
 
-            while (!IsValidInput(userChoice))
+            while (!IsUserChoiceValid(userChoice))
             {
                 Console.WriteLine("\n\tOoooops! You pressed an invalid option. Please try again.");
 
@@ -95,11 +95,15 @@ namespace ClassPaulita
 
         private void Play()
         {
+            Console.WriteLine($"{spacing}Play!");
+
             DeckOfCards deck = new DeckOfCards();
             deck.Suffle();
 
             Card previousCard = deck.Deal();
-            
+
+            int userScore = 0;
+
 
             while (deck.CardsLeftOnDeck > 0)
             {
@@ -107,18 +111,21 @@ namespace ClassPaulita
 
                 char userInput = GetUserInput(previousCard);
 
-                if (previousCard.CardValue > currentCard.CardValue && userInput == '1')
+                if (currentCard.CardValue > previousCard.CardValue && userInput == char.ToLower('y') || currentCard.CardValue == previousCard.CardValue && userInput == char.ToLower('n')
+                    || currentCard.CardValue < previousCard.CardValue && userInput == char.ToLower('n'))
                 {
-                    Console.WriteLine("Correct!");
-                }
-                else if (previousCard.CardValue < currentCard.CardValue && userInput == '2')
-                {
-                    Console.WriteLine("Correct!");
+                    Console.WriteLine($"\n{spacing}Correct! The next card is {currentCard}.");
+
+                    userScore++;
+
+                    Console.WriteLine($"{spacing}Your current score is: {userScore} points. Keep it up!");
                 }
 
                 else
                 {
-                    Console.WriteLine("Incorrect!");
+                    Console.WriteLine($"\n{spacing}Incorrect! The next card was {currentCard}.");
+
+                    Console.WriteLine($"{spacing}Your current score is: {userScore} points. Try to get the next one right!");
                 }
 
                 previousCard = currentCard;
@@ -135,14 +142,10 @@ namespace ClassPaulita
             Console.WriteLine("PAULA = 1000000000000 POINTS.");
         }
 
-        private bool IsInputValid(string userInput)
+        private bool IsUserInputValid(char userInput)
         {
-            if (userInput.Length < 1 || userInput == null)
-            {
-                return false;
-            }
 
-            else if (userInput[0] == '1' || userInput[0] == '2')
+            if (userInput == 'y' || userInput == 'Y' || userInput == 'n' || userInput == 'N')
             {
                 return true;
             }
@@ -155,17 +158,17 @@ namespace ClassPaulita
 
         private char GetUserInput(Card previousCard)
         {
-            Console.WriteLine($"\nIs the next card higher or lower than {previousCard}?");
-            string userInput = Console.ReadLine();
+            Console.Write($"\n\n\tIs the next card greater than {previousCard}(y or n)? ");
+            char userInput = Convert.ToChar(Console.ReadLine());
 
-            while (!IsInputValid(userInput))
+            while (!IsUserInputValid(userInput))
             {
-                Console.WriteLine("Your answer is not valid. Please try again!");
-                Console.WriteLine($"Is the next card higher or lower than {previousCard}?");
-                userInput = Console.ReadLine();
+                Console.WriteLine("\n\tYour answer is not valid. Please try again!");
+                Console.Write($"\n\n\tIs the next card higher or lower than {previousCard}(y or n)? ");
+                userInput = Convert.ToChar(Console.ReadLine());
             }
 
-            return userInput[0];
+            return userInput;
         }
     }
 }
