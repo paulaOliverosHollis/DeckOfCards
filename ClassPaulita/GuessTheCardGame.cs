@@ -26,12 +26,8 @@ namespace ClassPaulita
             return userChoice == 'q' || userChoice == 'Q';
         }
 
-        private bool IsUserChoiceValid(string input)
-        {
-            if (input == null || input.Length < 1)
-                return false;
-
-            char userChoice = input[0];
+        private bool IsUserChoiceValid(char userChoice)
+        {                      
 
             if (UserChoseToPlay(userChoice) || UserchoseToSeeInstructions(userChoice) || UserChosetoSeeBoard(userChoice) || UserChoseToQuit(userChoice))
             {
@@ -41,7 +37,7 @@ namespace ClassPaulita
             return false;
         }
 
-        private string PrintMenu()
+        private char GetUserMenuChoice()
         {
 
             string menu = $"{spacing}Press P To Play" +
@@ -51,7 +47,7 @@ namespace ClassPaulita
 
             Console.WriteLine(menu);
 
-            string userChoice = Console.ReadLine();
+            char userChoice = Convert.ToChar(Console.ReadLine());
 
             while (!IsUserChoiceValid(userChoice))
             {
@@ -59,7 +55,7 @@ namespace ClassPaulita
 
                 Console.WriteLine(menu);
 
-                userChoice = Console.ReadLine();
+                userChoice = Convert.ToChar(Console.ReadLine());
             }
 
             return userChoice;
@@ -69,24 +65,24 @@ namespace ClassPaulita
         {
             while (true)
             {
-                string userChoice = PrintMenu();
+                char userChoice = GetUserMenuChoice();
 
-                if (UserChoseToPlay(userChoice[0]))
+                if (UserChoseToPlay(userChoice))
                 {
                     Play();
                 }
 
-                if (UserchoseToSeeInstructions(userChoice[0]))
+                if (UserchoseToSeeInstructions(userChoice))
                 {
                     Instructions();
                 }
 
-                if (UserChosetoSeeBoard(userChoice[0]))
+                if (UserChosetoSeeBoard(userChoice))
                 {
                     HighScoreBoard();
                 }
 
-                if (UserChoseToQuit(userChoice[0]))
+                if (UserChoseToQuit(userChoice))
                 {
                     return;
                 }
@@ -109,23 +105,22 @@ namespace ClassPaulita
             {
                 Card currentCard = deck.Deal();
 
-                char userInput = GetUserInput(previousCard);
+                char userGuess = GetUserGuess(previousCard);
 
-                if (currentCard.CardValue > previousCard.CardValue && userInput == char.ToLower('y') || currentCard.CardValue == previousCard.CardValue && userInput == char.ToLower('n')
-                    || currentCard.CardValue < previousCard.CardValue && userInput == char.ToLower('n'))
+                if (userGuess == char.ToLower('y') && currentCard.CardValue > previousCard.CardValue || userGuess == char.ToLower('n') && currentCard.CardValue <= previousCard.CardValue)
                 {
                     Console.WriteLine($"\n{spacing}Correct! The next card is {currentCard}.");
 
                     userScore++;
 
-                    Console.WriteLine($"{spacing}Your current score is: {userScore} points. Keep it up!");
+                    Console.WriteLine($"{spacing}Your current score is: {userScore} point(s). Keep it up!");
                 }
 
                 else
                 {
                     Console.WriteLine($"\n{spacing}Incorrect! The next card was {currentCard}.");
 
-                    Console.WriteLine($"{spacing}Your current score is: {userScore} points. Try to get the next one right!");
+                    Console.WriteLine($"{spacing}Your current score is: {userScore} point(s). Try to get the next one right!");
                 }
 
                 previousCard = currentCard;
@@ -142,7 +137,7 @@ namespace ClassPaulita
             Console.WriteLine("PAULA = 1000000000000 POINTS.");
         }
 
-        private bool IsUserInputValid(char userInput)
+        private bool IsUserGuessValid(char userInput)
         {
 
             if (userInput == 'y' || userInput == 'Y' || userInput == 'n' || userInput == 'N')
@@ -156,19 +151,19 @@ namespace ClassPaulita
             }
         }
 
-        private char GetUserInput(Card previousCard)
+        private char GetUserGuess(Card previousCard)
         {
             Console.Write($"\n\n\tIs the next card greater than {previousCard}(y or n)? ");
-            char userInput = Convert.ToChar(Console.ReadLine());
+            char userGuess = Convert.ToChar(Console.ReadLine());
 
-            while (!IsUserInputValid(userInput))
+            while (!IsUserGuessValid(userGuess))
             {
                 Console.WriteLine("\n\tYour answer is not valid. Please try again!");
                 Console.Write($"\n\n\tIs the next card higher or lower than {previousCard}(y or n)? ");
-                userInput = Convert.ToChar(Console.ReadLine());
+                userGuess = Convert.ToChar(Console.ReadLine());
             }
 
-            return userInput;
+            return userGuess;
         }
     }
 }
