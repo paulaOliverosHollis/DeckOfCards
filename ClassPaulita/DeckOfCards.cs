@@ -5,15 +5,23 @@ using System.Text;
 
 namespace ClassPaulita
 {
-    class DeckOfCards
+    public class DeckOfCards
     {
         private List<Card> _unusedCards;
         private List<Card> _discardedCards;
         private Random random = new Random();
 
+        public int CardsLeftOnDeck
+        {
+            get
+            {
+                return _unusedCards.Count;
+            }
+        }
+
         //Constructor:
         public DeckOfCards()
-        {            
+        {
             _unusedCards = new List<Card>();
             _discardedCards = new List<Card>();
 
@@ -44,11 +52,16 @@ namespace ClassPaulita
 
         public Card Deal()
         {
-            Card topCard = _unusedCards[0];
-            _discardedCards.Add(_unusedCards[0]);
-            _unusedCards.Remove(_unusedCards[0]);
+            if (_unusedCards.Count > 0)
+            {
+                Card topCard = _unusedCards[0];
+                _discardedCards.Add(topCard);
+                _unusedCards.RemoveAt(0);
 
-            return topCard;
+                return topCard;
+            }
+
+            return null;
         }
 
         public List<Card> Order()
