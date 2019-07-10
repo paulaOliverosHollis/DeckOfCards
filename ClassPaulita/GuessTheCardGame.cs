@@ -1,10 +1,144 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ClassPaulita
 {
     public class GuessTheCardGame
     {
-        private string spacing = "\n\t\t\t\t\t\t";
+        private string _fileName = "scoreBoard.txt";
+        private List<KeyValuePair<int, string>> _scoreBoard = new List<KeyValuePair<int, string>>();
+        private Random _random = new Random();
+        private string _spacing = "\n\t\t\t\t\t\t";
+        
+
+        public GuessTheCardGame()
+        {
+
+            if (File.Exists(_fileName))
+            {
+                StreamReader reader = File.OpenText(_fileName);
+
+                while (true)
+                {
+                    string line = reader.ReadLine();
+
+                    if (line == null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        string[] scoreAndName = line.Split(' ');
+
+                        if (scoreAndName.Length == 2)
+                        {
+                            bool isItConvertible = int.TryParse(scoreAndName[0], out int result);
+
+                            if (isItConvertible && scoreAndName[1] != null)
+                            {
+                                _scoreBoard.Add(new KeyValuePair<int, string>(result, scoreAndName[1]));
+                            }
+                        }
+                    }
+                }
+
+                reader.Close();
+            }
+
+            else
+            {
+                File.Create(_fileName);
+            }
+
+            if (_scoreBoard.Count < 5)
+            {
+
+                List<string> extraNames = new List<string> { "Blondie", "Oreo", "Mini", "Ginger", "Shawnikua" };
+                List<int> extraScores = new List<int> { 0, 1, 2, 3, 4, 5 };
+
+                int missingLines = _scoreBoard.Count;
+
+                for (int i = 0; i < 5 - missingLines; i++)
+                {
+                    int randomNameIndex = _random.Next(extraNames.Count - 1);
+
+                    int randomScoreIndex = _random.Next(extraScores.Count - 1);
+
+                    _scoreBoard.Add(new KeyValuePair<int, string>(extraScores[randomScoreIndex], extraNames[randomNameIndex]));
+
+                    extraScores.Remove(extraScores[randomScoreIndex]);
+                }
+            }
+
+            _scoreBoard.Sort((x, y) => y.Key.CompareTo(x.Key));
+        }
+
+        private bool IsUserChoiceValid(char userChoice)
+        {
+
+            if (UserChoseToPlay(userChoice) || UserchoseToSeeInstructions(userChoice) || UserChosetoSeeBoard(userChoice) || UserChoseToQuit(userChoice))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsUserGuessValid(char userInput)
+        {
+
+            if (userInput == 'y' || userInput == 'Y' || userInput == 'n' || userInput == 'N')
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool IsUserNameValid(string userName)
+        {
+            if (userName == null || userName.Length > 10)
+            {
+                return false;
+            }
+            for (int i = 0; i < userName.Length; i++)
+            {
+                if (userName[i] == ' ')
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private char GetUserMenuChoice()
+        {
+
+            string menu = $"{_spacing}Press P To Play" +
+                          $"{_spacing}Press I For Instructions" +
+                          $"{_spacing}Press B To See The High Score Board" +
+                          $"{_spacing}Press Q To Quit";
+
+            Console.WriteLine(menu);
+
+            char userChoice = Convert.ToChar(Console.ReadLine());
+
+            while (!IsUserChoiceValid(userChoice))
+            {
+                Console.WriteLine("\n\tOoooops! You pressed an invalid option. Please try again.");
+
+                Console.WriteLine(menu);
+
+                userChoice = Convert.ToChar(Console.ReadLine());
+            }
+
+            return userChoice;
+        }
 
         private bool UserChoseToPlay(char userChoice)
         {
@@ -26,39 +160,60 @@ namespace ClassPaulita
             return userChoice == 'q' || userChoice == 'Q';
         }
 
-        private bool IsUserChoiceValid(char userChoice)
-        {                      
+        private char GetUserGuess(Card previousCard)
+        {
+            Console.Write($"\n\n\tIs the next card greater than {previousCard}(y or n)? ");
+            char userGuess = Convert.ToChar(Console.ReadLine());
 
-            if (UserChoseToPlay(userChoice) || UserchoseToSeeInstructions(userChoice) || UserChosetoSeeBoard(userChoice) || UserChoseToQuit(userChoice))
+            while (!IsUserGuessValid(userGuess))
             {
-                return true;
+                Console.WriteLine("\n\tYour answer is not valid. Please try again!");
+                Console.Write($"\n\n\tIs the next card higher or lower than {previousCard}(y or n)? ");
+                userGuess = Convert.ToChar(Console.ReadLine());
             }
 
-            return false;
+            return userGuess;
         }
 
-        private char GetUserMenuChoice()
+        private void AddUserScoreToBoard(int userScore)
         {
+            Console.WriteLine($"Congratulations! You made it to the Leader Board.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
+            string userName = Console.ReadLine();
 
-            string menu = $"{spacing}Press P To Play" +
-                          $"{spacing}Press I For Instructions" +
-                          $"{spacing}Press B To See The High Score Board" +
-                          $"{spacing}Press Q To Quit";
+            _scoreBoard.Add(new KeyValuePair<int, string>(userScore, userName));
 
-            Console.WriteLine(menu);
-
-            char userChoice = Convert.ToChar(Console.ReadLine());
-
-            while (!IsUserChoiceValid(userChoice))
+            while(!IsUserNameValid(userName))
             {
-                Console.WriteLine("\n\tOoooops! You pressed an invalid option. Please try again.");
-
-                Console.WriteLine(menu);
-
-                userChoice = Convert.ToChar(Console.ReadLine());
+                Console.WriteLine($"\n{_spacing}You entered an invalid name. Please try again.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
             }
 
-            return userChoice;
+            _scoreBoard.Sort((x, y) => y.Key.CompareTo(x.Key));
+
+            if (_scoreBoard.Count > 5)
+            {
+                int linesToRemove = _scoreBoard.Count - 5;
+                int counter = 0;
+
+                while (counter < linesToRemove)
+                {
+                    _scoreBoard.RemoveAt(_scoreBoard.Count - 1);
+
+                    counter++;
+                }
+            }
+
+        }
+
+        private void UpdateScoreBoardFile()
+        {
+            StreamWriter writer = new StreamWriter(_fileName);
+
+            foreach (var item in _scoreBoard)
+            {
+                writer.WriteLine(item);
+            }
+
+            writer.Close();
         }
 
         public void Run()
@@ -91,7 +246,7 @@ namespace ClassPaulita
 
         private void Play()
         {
-            Console.WriteLine($"{spacing}Play!");
+            Console.WriteLine($"{_spacing}Play!");
 
             DeckOfCards deck = new DeckOfCards();
             deck.Suffle();
@@ -109,22 +264,32 @@ namespace ClassPaulita
 
                 if (userGuess == char.ToLower('y') && currentCard.CardValue > previousCard.CardValue || userGuess == char.ToLower('n') && currentCard.CardValue <= previousCard.CardValue)
                 {
-                    Console.WriteLine($"\n{spacing}Correct! The next card is {currentCard}.");
+                    Console.WriteLine($"\n{_spacing}Correct! The next card is {currentCard}.");
 
                     userScore++;
 
-                    Console.WriteLine($"{spacing}Your current score is: {userScore} point(s). Keep it up!");
+                    Console.WriteLine($"{_spacing}Your current score is: {userScore} point(s). Keep it up!");
                 }
 
                 else
                 {
-                    Console.WriteLine($"\n{spacing}Incorrect! The next card was {currentCard}.");
+                    Console.WriteLine($"\n{_spacing}Incorrect! The next card was {currentCard}.");
 
-                    Console.WriteLine($"{spacing}Your current score is: {userScore} point(s). Try to get the next one right!");
+                    Console.WriteLine($"{_spacing}Your current score is: {userScore} point(s). Try to get the next one right!");
                 }
 
                 previousCard = currentCard;
             }
+
+            if (userScore > _scoreBoard[4].Key)
+            {
+                AddUserScoreToBoard(userScore);
+            }
+
+            else
+                Console.WriteLine("Sorry! You did not make it to the LeaderBoard. Keep trying!");
+
+            UpdateScoreBoardFile();
         }
 
         private void Instructions()
@@ -134,36 +299,17 @@ namespace ClassPaulita
 
         private void HighScoreBoard()
         {
-            Console.WriteLine("PAULA = 1000000000000 POINTS.");
-        }
+            Console.WriteLine($"\n\t\t\t\t****** Guess The Card LeaderBoard ******\n");
 
-        private bool IsUserGuessValid(char userInput)
-        {
-
-            if (userInput == 'y' || userInput == 'Y' || userInput == 'n' || userInput == 'N')
+            foreach (var s in _scoreBoard)
             {
-                return true;
+                Console.WriteLine($"{_spacing}* {s.Value} *");
+                Console.WriteLine($"{_spacing}{s.Key} point(s)\n\n");
             }
 
-            else
-            {
-                return false;
-            }
         }
 
-        private char GetUserGuess(Card previousCard)
-        {
-            Console.Write($"\n\n\tIs the next card greater than {previousCard}(y or n)? ");
-            char userGuess = Convert.ToChar(Console.ReadLine());
 
-            while (!IsUserGuessValid(userGuess))
-            {
-                Console.WriteLine("\n\tYour answer is not valid. Please try again!");
-                Console.Write($"\n\n\tIs the next card higher or lower than {previousCard}(y or n)? ");
-                userGuess = Convert.ToChar(Console.ReadLine());
-            }
 
-            return userGuess;
-        }
     }
 }
