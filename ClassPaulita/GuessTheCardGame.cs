@@ -10,37 +10,30 @@ namespace ClassPaulita
         private List<KeyValuePair<int, string>> _scoreBoard = new List<KeyValuePair<int, string>>();
         private Random _random = new Random();
         private string _spacing = "\n\t\t\t\t\t\t";
-        
 
         public GuessTheCardGame()
         {
-
             if (File.Exists(_fileName))
             {
                 StreamReader reader = File.OpenText(_fileName);
 
-                while (true)
+                string line = reader.ReadLine();
+
+                while (line != null)
                 {
-                    string line = reader.ReadLine();
+                    string[] scoreAndName = line.Split(' ');
 
-                    if (line == null)
+                    if (scoreAndName.Length == 2)
                     {
-                        break;
-                    }
-                    else
-                    {
-                        string[] scoreAndName = line.Split(' ');
+                        bool isItConvertible = int.TryParse(scoreAndName[0], out int result);
 
-                        if (scoreAndName.Length == 2)
+                        if (isItConvertible && scoreAndName[1] != null)
                         {
-                            bool isItConvertible = int.TryParse(scoreAndName[0], out int result);
-
-                            if (isItConvertible && scoreAndName[1] != null)
-                            {
-                                _scoreBoard.Add(new KeyValuePair<int, string>(result, scoreAndName[1]));
-                            }
+                            _scoreBoard.Add(new KeyValuePair<int, string>(result, scoreAndName[1]));
                         }
                     }
+
+                    line = reader.ReadLine();
                 }
 
                 reader.Close();
@@ -51,9 +44,8 @@ namespace ClassPaulita
                 File.Create(_fileName);
             }
 
-            if (_scoreBoard.Count < 5)
+            while (_scoreBoard.Count < 5)
             {
-
                 List<string> extraNames = new List<string> { "Blondie", "Oreo", "Mini", "Ginger", "Shawnikua" };
                 List<int> extraScores = new List<int> { 0, 1, 2, 3, 4, 5 };
 
@@ -182,7 +174,7 @@ namespace ClassPaulita
 
             _scoreBoard.Add(new KeyValuePair<int, string>(userScore, userName));
 
-            while(!IsUserNameValid(userName))
+            while (!IsUserNameValid(userName))
             {
                 Console.WriteLine($"\n{_spacing}You entered an invalid name. Please try again.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
             }
@@ -201,7 +193,6 @@ namespace ClassPaulita
                     counter++;
                 }
             }
-
         }
 
         private void UpdateScoreBoardFile()
@@ -246,7 +237,7 @@ namespace ClassPaulita
 
         private void Play()
         {
-            Console.WriteLine($"{_spacing}Play!");
+            Console.WriteLine($"{_spacing}Let's Play!");
 
             DeckOfCards deck = new DeckOfCards();
             deck.Suffle();
@@ -287,7 +278,9 @@ namespace ClassPaulita
             }
 
             else
+            {
                 Console.WriteLine("Sorry! You did not make it to the LeaderBoard. Keep trying!");
+            }
 
             UpdateScoreBoardFile();
         }
@@ -306,10 +299,6 @@ namespace ClassPaulita
                 Console.WriteLine($"{_spacing}* {s.Value} *");
                 Console.WriteLine($"{_spacing}{s.Key} point(s)\n\n");
             }
-
         }
-
-
-
     }
 }
