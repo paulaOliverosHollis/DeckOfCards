@@ -61,7 +61,7 @@ namespace ClassPaulita
             {
                 int randomNameIndex = _random.Next(extraNames.Count - 1);
 
-                int randomScore = _random.Next(52);
+                int randomScore = _random.Next(30);
                 _scoreBoard.Add(new KeyValuePair<int, string>(randomScore, extraNames[randomNameIndex]));
 
                 extraNames.Remove(extraNames[randomNameIndex]);
@@ -70,10 +70,13 @@ namespace ClassPaulita
             _scoreBoard.Sort((x, y) => y.Key.CompareTo(x.Key));
         }
 
-        private bool IsUserChoiceValid(char userChoice)
+        private bool IsUserChoiceValid(string userChoice)
         {
-
-            if (UserChoseToPlay(userChoice) || UserchoseToSeeInstructions(userChoice) || UserChosetoSeeBoard(userChoice) || UserChoseToQuit(userChoice))
+            if (userChoice == null || userChoice.Length > 1)
+            {
+                return false;
+            }
+            else if (UserChoseToPlay(userChoice[0]) || UserchoseToSeeInstructions(userChoice[0]) || UserChosetoSeeBoard(userChoice[0]) || UserChoseToQuit(userChoice[0]))
             {
                 return true;
             }
@@ -81,10 +84,13 @@ namespace ClassPaulita
             return false;
         }
 
-        private bool IsUserGuessValid(char userInput)
+        private bool IsUserGuessValid(string userGuess)
         {
-
-            if (userInput == 'y' || userInput == 'Y' || userInput == 'n' || userInput == 'N')
+            if(userGuess == null || userGuess.Length > 1 )
+            {
+                return false;
+            }
+            if (userGuess[0] == 'y' || userGuess[0] == 'Y' || userGuess[0] == 'n' || userGuess[0] == 'N')
             {
                 return true;
             }
@@ -122,7 +128,7 @@ namespace ClassPaulita
 
             Console.WriteLine(menu);
 
-            char userChoice = Convert.ToChar(Console.ReadLine());
+            string userChoice = Console.ReadLine();
 
             while (!IsUserChoiceValid(userChoice))
             {
@@ -130,10 +136,10 @@ namespace ClassPaulita
 
                 Console.WriteLine(menu);
 
-                userChoice = Convert.ToChar(Console.ReadLine());
+                userChoice = Console.ReadLine();
             }
 
-            return userChoice;
+            return userChoice[0];
         }
 
         private bool UserChoseToPlay(char userChoice)
@@ -159,22 +165,22 @@ namespace ClassPaulita
         private char GetUserGuess(Card previousCard)
         {
             Console.Write($"\n\n\tIs the next card greater than {previousCard}(y or n)? ");
-            char userGuess = Convert.ToChar(Console.ReadLine());
+            string userGuess = Console.ReadLine();
 
             while (!IsUserGuessValid(userGuess))
             {
                 Console.WriteLine("\n\tYour answer is not valid. Please try again!");
                 Console.Write($"\n\n\tIs the next card higher or lower than {previousCard}(y or n)? ");
-                userGuess = Convert.ToChar(Console.ReadLine());
+                userGuess = Console.ReadLine();
             }
 
-            return userGuess;
+            return userGuess[0];
         }
 
         private void AddUserScoreToBoard(int userScore)
         {
             Console.WriteLine($"Congratulations! You made it to the Leader Board.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
-            string userName = Console.ReadLine();                       
+            string userName = Console.ReadLine();
 
             while (!IsUserNameValid(userName))
             {
@@ -187,10 +193,10 @@ namespace ClassPaulita
             _scoreBoard.Sort((x, y) => y.Key.CompareTo(x.Key));
 
             if (_scoreBoard.Count > 5)
-            {    
+            {
                 while (_scoreBoard.Count > 5)
                 {
-                    _scoreBoard.RemoveAt(_scoreBoard.Count - 1);                    
+                    _scoreBoard.RemoveAt(_scoreBoard.Count - 1);
                 }
             }
         }
