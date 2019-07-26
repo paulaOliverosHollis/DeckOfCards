@@ -13,54 +13,58 @@ namespace ClassPaulita
 
         public GuessTheCardGame()
         {
-            if (File.Exists(_fileName))
+            try
             {
-                StreamReader reader = File.OpenText(_fileName);
-
-                string line = reader.ReadLine();
-
-                while (line != null)
+                if (File.Exists(_fileName))
                 {
-                    string[] scoreAndName = line.Split(' ');
+                    StreamReader reader = File.OpenText(_fileName);
 
-                    if (scoreAndName.Length == 2)
+                    string line = reader.ReadLine();
+
+                    while (line != null)
                     {
-                        bool isItConvertible = int.TryParse(scoreAndName[0], out int result);
+                        string[] scoreAndName = line.Split(' ');
 
-                        if (isItConvertible && scoreAndName[1] != null)
+                        if (scoreAndName.Length == 2)
                         {
-                            _scoreBoard.Add(new KeyValuePair<int, string>(result, scoreAndName[1]));
+                            bool isItConvertible = int.TryParse(scoreAndName[0], out int result);
+
+                            if (isItConvertible && scoreAndName[1] != null)
+                            {
+                                _scoreBoard.Add(new KeyValuePair<int, string>(result, scoreAndName[1]));
+                            }
                         }
+
+                        line = reader.ReadLine();
                     }
 
-                    line = reader.ReadLine();
+                    reader.Close();
                 }
 
-                reader.Close();
+                else
+                {
+                    File.Create(_fileName);
+                }
+            }
+            catch (FileNotFoundException exceptionOne)
+            {
+                Console.WriteLine("\nSomething went wrong. Please exit the game and try again.");
+            }
+            catch (FileLoadException exceptionTwo)
+            {
+                Console.WriteLine("\nSomething went wrong. Please exit the game and try again.");
             }
 
-            else
-            {
-                File.Create(_fileName);
-            }
+            List<string> extraNames = new List<string> { "Blondie", "Oreo", "Mini", "Ginger", "Shawnikua", "Trooper", "Maui", "Ferguson" };
 
             while (_scoreBoard.Count < 5)
             {
-                List<string> extraNames = new List<string> { "Blondie", "Oreo", "Mini", "Ginger", "Shawnikua" };
-                List<int> extraScores = new List<int> { 0, 1, 2, 3, 4, 5 };
+                int randomNameIndex = _random.Next(extraNames.Count - 1);
 
-                int missingLines = _scoreBoard.Count;
+                int randomScore = _random.Next(52);
+                _scoreBoard.Add(new KeyValuePair<int, string>(randomScore, extraNames[randomNameIndex]));
 
-                for (int i = 0; i < 5 - missingLines; i++)
-                {
-                    int randomNameIndex = _random.Next(extraNames.Count - 1);
-
-                    int randomScoreIndex = _random.Next(extraScores.Count - 1);
-
-                    _scoreBoard.Add(new KeyValuePair<int, string>(extraScores[randomScoreIndex], extraNames[randomNameIndex]));
-
-                    extraScores.Remove(extraScores[randomScoreIndex]);
-                }
+                extraNames.Remove(extraNames[randomNameIndex]);
             }
 
             _scoreBoard.Sort((x, y) => y.Key.CompareTo(x.Key));
@@ -97,9 +101,10 @@ namespace ClassPaulita
             {
                 return false;
             }
+
             for (int i = 0; i < userName.Length; i++)
             {
-                if (userName[i] == ' ')
+                if (!char.IsLetterOrDigit(userName[i]))
                 {
                     return false;
                 }
