@@ -40,12 +40,12 @@ namespace ClassPaulita
 
                     reader.Close();
                 }
-
                 else
                 {
                     File.Create(_fileName);
                 }
             }
+
             catch (FileNotFoundException exceptionOne)
             {
                 Console.WriteLine("\nSomething went wrong. Please exit the game and try again.");
@@ -88,7 +88,6 @@ namespace ClassPaulita
             {
                 return true;
             }
-
             else
             {
                 return false;
@@ -175,27 +174,23 @@ namespace ClassPaulita
         private void AddUserScoreToBoard(int userScore)
         {
             Console.WriteLine($"Congratulations! You made it to the Leader Board.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
-            string userName = Console.ReadLine();
-
-            _scoreBoard.Add(new KeyValuePair<int, string>(userScore, userName));
+            string userName = Console.ReadLine();                       
 
             while (!IsUserNameValid(userName))
             {
                 Console.WriteLine($"\n{_spacing}You entered an invalid name. Please try again.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
+                userName = Console.ReadLine();
             }
+
+            _scoreBoard.Add(new KeyValuePair<int, string>(userScore, userName));
 
             _scoreBoard.Sort((x, y) => y.Key.CompareTo(x.Key));
 
             if (_scoreBoard.Count > 5)
-            {
-                int linesToRemove = _scoreBoard.Count - 5;
-                int counter = 0;
-
-                while (counter < linesToRemove)
+            {    
+                while (_scoreBoard.Count > 5)
                 {
-                    _scoreBoard.RemoveAt(_scoreBoard.Count - 1);
-
-                    counter++;
+                    _scoreBoard.RemoveAt(_scoreBoard.Count - 1);                    
                 }
             }
         }
@@ -281,7 +276,6 @@ namespace ClassPaulita
             {
                 AddUserScoreToBoard(userScore);
             }
-
             else
             {
                 Console.WriteLine("Sorry! You did not make it to the LeaderBoard. Keep trying!");
