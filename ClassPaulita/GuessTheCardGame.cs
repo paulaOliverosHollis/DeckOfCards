@@ -14,7 +14,7 @@ namespace ClassPaulita
         public GuessTheCardGame()
         {
             try
-            {
+            {               
                 if (File.Exists(_fileName))
                 {
                     StreamReader reader = File.OpenText(_fileName);
@@ -45,15 +45,10 @@ namespace ClassPaulita
                     File.Create(_fileName);
                 }
             }
-
-            catch (FileNotFoundException exceptionOne)
+            catch (Exception e)
             {
-                Console.WriteLine("\nSomething went wrong. Please exit the game and try again.");
-            }
-            catch (FileLoadException exceptionTwo)
-            {
-                Console.WriteLine("\nSomething went wrong. Please exit the game and try again.");
-            }
+                Console.WriteLine($"\nSomething went wrong. The following error was generated: {e.Message} Please exit the game and try again.");
+            }            
 
             List<string> extraNames = new List<string> { "Blondie", "Oreo", "Mini", "Ginger", "Shawnikua", "Trooper", "Maui", "Ferguson" };
 
