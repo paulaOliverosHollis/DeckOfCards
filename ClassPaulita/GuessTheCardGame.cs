@@ -14,7 +14,7 @@ namespace ClassPaulita
         public GuessTheCardGame()
         {
             try
-            {               
+            {
                 if (File.Exists(_fileName))
                 {
                     StreamReader reader = File.OpenText(_fileName);
@@ -42,13 +42,14 @@ namespace ClassPaulita
                 }
                 else
                 {
-                    File.Create(_fileName);
+                    FileStream stream = File.Create(_fileName);
+                    stream.Close();
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine($"\nSomething went wrong. The following error was generated: {e.Message} Please exit the game and try again.");
-            }            
+            }
 
             List<string> extraNames = new List<string> { "Blondie", "Oreo", "Mini", "Ginger", "Shawnikua", "Trooper", "Maui", "Ferguson" };
 
@@ -56,13 +57,15 @@ namespace ClassPaulita
             {
                 int randomNameIndex = _random.Next(extraNames.Count - 1);
 
-                int randomScore = _random.Next(7);
+                int randomScore = _random.Next(5);
                 _scoreBoard.Add(new KeyValuePair<int, string>(randomScore, extraNames[randomNameIndex]));
 
                 extraNames.Remove(extraNames[randomNameIndex]);
             }
 
             _scoreBoard.Sort((x, y) => y.Key.CompareTo(x.Key));
+
+            UpdateScoreBoardFile();
         }
 
         private bool IsUserChoiceValid(string userChoice)
@@ -81,7 +84,7 @@ namespace ClassPaulita
 
         private bool IsUserGuessValid(string userGuess)
         {
-            if(userGuess == null || userGuess.Length > 1 )
+            if (userGuess == null || userGuess.Length > 1)
             {
                 return false;
             }
@@ -202,7 +205,7 @@ namespace ClassPaulita
 
             foreach (var item in _scoreBoard)
             {
-                writer.WriteLine(item);
+                writer.WriteLine(item.Key + " " + item.Value);
             }
 
             writer.Close();
@@ -262,16 +265,16 @@ namespace ClassPaulita
 
                     Console.WriteLine($"{_spacing}Your current score is: {userScore} point(s). Keep it up!");
                 }
-
                 else
                 {
                     Console.WriteLine($"\n{_spacing}Incorrect! The next card was {currentCard}.");
-
-                    Console.WriteLine($"{_spacing}Your current score is: {userScore} point(s). Try to get the next one right!");
+                    break;
                 }
 
                 previousCard = currentCard;
             }
+
+            Console.WriteLine($"{_spacing}Game Over!\n{_spacing}Your final score is: {userScore} point(s).");
 
             if (userScore > _scoreBoard[4].Key)
             {
