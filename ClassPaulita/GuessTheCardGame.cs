@@ -29,7 +29,7 @@ namespace ClassPaulita
                         {
                             bool isItConvertible = int.TryParse(scoreAndName[0], out int result);
 
-                            if (isItConvertible && scoreAndName[1] != null)
+                            if (isItConvertible && !string.IsNullOrWhiteSpace(scoreAndName[1]))
                             {
                                 _scoreBoard.Add(new KeyValuePair<int, string>(result, scoreAndName[1]));
                             }
@@ -56,7 +56,7 @@ namespace ClassPaulita
             {
                 int randomNameIndex = _random.Next(extraNames.Count - 1);
 
-                int randomScore = _random.Next(30);
+                int randomScore = _random.Next(7);
                 _scoreBoard.Add(new KeyValuePair<int, string>(randomScore, extraNames[randomNameIndex]));
 
                 extraNames.Remove(extraNames[randomNameIndex]);
