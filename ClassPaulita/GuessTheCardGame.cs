@@ -177,7 +177,7 @@ namespace ClassPaulita
 
         private void AddUserScoreToBoard(int userScore)
         {
-            Console.WriteLine($"Congratulations! You made it to the Leader Board.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
+            Console.WriteLine($"\n\n{_spacing}{_spacing}Congratulations! You made it to the Leader Board.\n{_spacing}Please enter your userName (10 characters max):\n\n{_spacing}");
             string userName = Console.ReadLine();
 
             while (!IsUserNameValid(userName))
@@ -274,7 +274,7 @@ namespace ClassPaulita
                 previousCard = currentCard;
             }
 
-            Console.WriteLine($"{_spacing}Game Over!\n{_spacing}Your final score is: {userScore} point(s).");
+            Console.WriteLine($"\n\n****************************************************************** GAME OVER ******************************************************************\n{_spacing}Your final score is: {userScore} point(s).");
 
             if (userScore > _scoreBoard[4].Key)
             {
@@ -282,7 +282,7 @@ namespace ClassPaulita
             }
             else
             {
-                Console.WriteLine("Sorry! You did not make it to the LeaderBoard. Keep trying!");
+                Console.WriteLine($"{_spacing}Sorry! You did not make it to the LeaderBoard. Keep trying!\n\n");
             }
 
             UpdateScoreBoardFile();
@@ -290,7 +290,11 @@ namespace ClassPaulita
 
         private void Instructions()
         {
-            Console.WriteLine("PLAY MOTHER FUCKER");
+            Console.WriteLine("\n\n\tThank you for choosing to play Guess The Card Game!" +
+                "\n\n\tIn this game you have to guess if the next card in the deck is higher than the previous one!" +
+                "\n\n\tTo win, try to get as many correct guesses in a row as you can by entering the key * y * for yes or the key * n * for no." +
+                "\n\n\tAs soon as you get one incorrect guess the game is over! And if your score is high enough you might make it to the *** Guess The Card Game Leaderboard ***" +
+                "\n\n\tNow let's play and give us your best guess!\n");
         }
 
         private void HighScoreBoard()
